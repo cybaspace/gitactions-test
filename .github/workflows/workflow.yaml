@@ -1,26 +1,30 @@
 name: Test GitHub-Actions
 
 on: [push, pull_request]
+  branches: [ main ]
+  paths-ignore:
+    - README.md
 
 jobs:
   build:
     name: "Build"
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        java: ['11','17']
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: gradle/wrapper-validation-action@v1
-      - name: Set up JDK ${{ matrix.java }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Set up Java
         uses: actions/setup-java@v2
         with:
-          java-version: ${{ matrix.java }}
-          distribution: 'temurin'
+          java-version: 11
+          distribution: 'adopt'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
+
+      - name: Gradle compile and test
+        run: ./gradlew clean test
