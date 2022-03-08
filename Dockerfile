@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk
+FROM openjdk:8u242-stretch
 EXPOSE 80/tcp
 RUN mkdir /app
 COPY *-all.jar /app/ktor-app.jar

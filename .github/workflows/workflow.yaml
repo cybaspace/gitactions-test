@@ -55,7 +55,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: java-app
+          name: ${{ env.AZURE_WEBAPP_NAME }}
           path: '${{ github.workspace }}/build/libs/*-all.jar'
 
       - name: Upload artifact for deployment job
@@ -76,23 +76,35 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: java-app
+          name: ${{ env.AZURE_WEBAPP_NAME }}
 
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
           name: dockerfile
 
-      - name: 'Build and push image'
+      - name: Login to azure
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-      - run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/webapp:${{ github.sha }}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/webapp:${{ github.sha }}
-
+      - name: Build and tag image
+        run: |
+          echo "github.sha=$GITHUB_SHA"
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.AZURE_WEBAPP_NAME }}:${{ github.sha }}
+      - name: Scan image for vulnerabilities
+        uses: Azure/container-scan@v0
+        id: container-scan
+        continue-on-error: true
+        with:
+          image-name: ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.AZURE_WEBAPP_NAME }}:${{ github.sha }}
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.AZURE_WEBAPP_NAME }}:${{ github.sha }}
+      - name: Show Scan Report
+        run: |
+          ls -al ${{ steps.container-scan.outputs.scan-report-path }}
 
   deploy:
     name: Deploy WebApp to Azure
@@ -106,7 +118,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: java-app
+          name: ${{ env.AZURE_WEBAPP_NAME }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
