@@ -15,14 +15,6 @@ application {
     mainClass.set("com.cybaspace.ApplicationKt")
 }
 
-tasks{
-    shadowJar {
-        manifest {
-            attributes(Pair("Main-Class", "com.example.ApplicationKt"))
-        }
-    }
-}
-
 repositories {
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }

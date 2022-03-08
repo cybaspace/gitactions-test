@@ -46,7 +46,7 @@ jobs:
       #  run: ./gradlew clean test
 
       - name: Create fat jar
-        run: ./gradlew shadowJar
+        run: ./gradlew shadowJar --no-daemon
 
       - name: Conditional step ONLY for pull request
         if: ${{ github.event_name == 'pull_request' }}
@@ -56,7 +56,58 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: java-app
-          path: '${{ github.workspace }}/build/libs/*-all.jar'
+          path: '${{ github.workspace }}/build/libs/*-all.zip'
+
+      - name: Upload artifact for deployment job
+          uses: actions/upload-artifact@v2
+          with:
+            name: dockerfile
+            path: '${{ github.workspace }}/Dockerfile'
+
+  build-image:
+    name: Build a container image
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: java-app
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: dockerfile
+
+      - name: Create container image
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          slot-name: 'production'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D76E313513DF4BB7B7678512D179D83D }}
+          package: '*.jar'
+
+#      - name: 'Login via Azure CLI'
+#        uses: azure/login@v1
+#        with:
+#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Build and push image'
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+      - run: |
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/webapp:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/webapp:${{ github.sha }}
+
 
   deploy:
     name: Deploy WebApp to Azure
