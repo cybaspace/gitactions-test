@@ -83,21 +83,6 @@ jobs:
         with:
           name: dockerfile
 
-      - name: Create container image
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D76E313513DF4BB7B7678512D179D83D }}
-          package: '*.jar'
-
-      #      - name: 'Login via Azure CLI'
-      #        uses: azure/login@v1
-      #        with:
-      #          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: 'Build and push image'
         uses: azure/docker-login@v1
         with:
