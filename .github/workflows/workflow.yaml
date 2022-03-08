@@ -28,7 +28,7 @@ jobs:
       - run: echo "The name of the branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
       - run: echo "${{ toJson(github) }}"
-
+      - run: echo "${{ github.event.pusher.email }}"
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -121,7 +121,7 @@ jobs:
           # Required mail subject:
           subject: ${{github.repository}} scan result
           # Required recipients' addresses:
-          to: semjon.krolzik@accenture.com
+          to: ${{ github.event.pusher.email }}
           # Required sender full name (address can be skipped):
           from: semjon@krolzik.de # <user@example.com>
           # Optional whether this connection use TLS (default is true if server_port is 465)
