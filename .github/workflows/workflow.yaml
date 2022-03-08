@@ -105,6 +105,27 @@ jobs:
       - name: Show Scan Report
         run: |
           ls -al ${{ steps.container-scan.outputs.scan-report-path }}
+      - name: Send scan report with mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # Required mail server address:
+          server_address: smtp.ionos.de
+          # Required mail server port:
+          server_port: 465
+          # Optional (recommended): mail server username:
+          username: ${{secrets.MAIL_USERNAME}}
+          # Optional (recommended) mail server password:
+          password: ${{secrets.MAIL_PASSWORD}}
+          # Required mail subject:
+          subject: ${{github.repository}} scan result
+          # Required recipients' addresses:
+          to: semjon.krolzik@accenture.com
+          # Required sender full name (address can be skipped):
+          from: semjon@krolzik.de # <user@example.com>
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          body: Attached scan result of ${{github.repository}}
+          attachments: ${{ steps.container-scan.outputs.scan-report-path }}
 
   deploy:
     name: Deploy WebApp to Azure
