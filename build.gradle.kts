@@ -21,9 +21,6 @@ repositories {
 }
 
 dependencies {
-    //implementation("org.apache.logging.log4j:log4j-api-kotlin:1.3.0")
-    implementation("org.apache.logging.log4j:log4j-api:2.17.0")
-    implementation("org.apache.logging.log4j:log4j-core:2.17.0")
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     implementation("ch.qos.logback:logback-classic:$logback_version")
