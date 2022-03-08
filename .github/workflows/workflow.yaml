@@ -59,10 +59,10 @@ jobs:
           path: '${{ github.workspace }}/build/libs/*-all.zip'
 
       - name: Upload artifact for deployment job
-          uses: actions/upload-artifact@v2
-          with:
-            name: dockerfile
-            path: '${{ github.workspace }}/Dockerfile'
+        uses: actions/upload-artifact@v2
+        with:
+          name: dockerfile
+          path: '${{ github.workspace }}/Dockerfile'
 
   build-image:
     name: Build a container image
@@ -93,10 +93,10 @@ jobs:
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D76E313513DF4BB7B7678512D179D83D }}
           package: '*.jar'
 
-#      - name: 'Login via Azure CLI'
-#        uses: azure/login@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      #      - name: 'Login via Azure CLI'
+      #        uses: azure/login@v1
+      #        with:
+      #          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: 'Build and push image'
         uses: azure/docker-login@v1
