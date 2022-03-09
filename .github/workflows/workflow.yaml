@@ -104,9 +104,13 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/${{ env.AZURE_WEBAPP_NAME }}:${{ github.sha }}
-      - name: Show Scan Report
-        run: |
-          ls -al ${{ steps.container-scan.outputs.scan-report-path }}
+      - name: Post logs in appinsights
+        uses: Azure/publish-security-assessments@v0
+        with:
+          scan-results-path: ${{ steps.container-scan.outputs.scan-report-path }}
+          connection-string: ${{ secret.AZ_APPINSIGHTS_CONNECTION_STRING }}
+          subscription-token: ${{ secret.AZ_SUBSCRIPTION_TOKEN }}
+
       - name: Send scan report with mail
         uses: dawidd6/action-send-mail@v3
         with:
