@@ -29,6 +29,11 @@ jobs:
 
       - run: echo "${{ toJson(github) }}"
       - run: echo "${{ github.event.pusher.email }}"
+      - id: teststep
+        uses: cybaspace/hello-world-composite-action@v1
+        with:
+          who-to-greet: 'Me'
+      - run: echo random-number ${{ steps.teststep.outputs.random-number }}
       - name: Checkout code
         uses: actions/checkout@v2
 
