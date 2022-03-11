@@ -27,22 +27,9 @@ jobs:
 
       - run: echo "The name of the branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
-      - run: echo "env ${{ toJson(env) }}"
-      - run: echo "job ${{ toJson(job) }}"
-      - run: echo "steps ${{ toJson(steps) }}"
-      - run: echo "runner ${{ toJson(runner) }}"
-      - run: echo "secrets ${{ secrets }}"
-      - run: echo "strategy ${{ toJson(strategy) }}"
-      - run: echo "matrix ${{ toJson(matrix) }}"
-      - run: echo "needs ${{ toJson(needs) }}"
-      - run: echo "inputs ${{ toJson(inputs) }}"
       - run: echo "github ${{ toJson(github) }}"
       - run: echo "pusher email ${{ github.event.pusher.email }}"
-      - id: teststep
-        uses: cybaspace/hello-world-composite-action@v1
-        with:
-          who-to-greet: 'Me'
-      - run: echo random-number ${{ steps.teststep.outputs.random-number }}
+
       - name: Checkout code
         uses: actions/checkout@v2
 
