@@ -27,6 +27,15 @@ jobs:
 
       - run: echo "The name of the branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
+      - run: echo "${{ toJson(env) }}"
+      - run: echo "${{ toJson(job) }}"
+      - run: echo "${{ toJson(steps) }}"
+      - run: echo "${{ toJson(runner) }}"
+      - run: echo "${{ toJson(secrets) }}"
+      - run: echo "${{ toJson(strategy) }}"
+      - run: echo "${{ toJson(matrix) }}"
+      - run: echo "${{ toJson(needs) }}"
+      - run: echo "${{ toJson(inputs) }}"
       - run: echo "${{ toJson(github) }}"
       - run: echo "${{ github.event.pusher.email }}"
       - id: teststep
