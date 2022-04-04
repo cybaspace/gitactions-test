@@ -23,7 +23,7 @@ jobs:
           who-to-control: 'the whole world'
       - name: Get time took control
         run: echo "We took control over the whole world at ${{ steps.worlddomination.outputs.time }}"
-        
-      - uses: cybaspace/reusable-workflow/.github/workflows/reusable-workflow
-        with:
-          username: 'Jane'
+  call-reusable-workflow:
+    uses: cybaspace/reusable-workflow/.github/workflows/reusable-workflow.yml@v2
+    with:
+      username: 'Jane'
