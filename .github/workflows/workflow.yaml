@@ -28,6 +28,7 @@ jobs:
       - run: echo "The name of the branch is ${{ github.ref }} and your repository is ${{ github.repository }}"
 
       - run: echo "github ${{ toJson(github) }}"
+      
       - run: echo "pusher email ${{ github.event.pusher.email }}"
 
       - name: Checkout code
