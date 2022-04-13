@@ -1,0 +1,29 @@
+name: Starter CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Run a one-line script
+        run: echo Hello from Starter CI
+      
+      - name: World Domination
+        id: worlddomination
+        uses: cybaspace/world-domination-action@v1
+        with:
+          who-to-control: 'the whole world'
+      - name: Get time took control
+        run: echo "We took control over the whole world at ${{ steps.worlddomination.outputs.time }}"
+  call-reusable-workflow:
+    uses: cybaspace/reusable-workflow/.github/workflows/reusable-workflow.yml@v2
+    with:
+      username: 'Jane'
